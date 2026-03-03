@@ -110,8 +110,15 @@ For stories with testable logic, also include:
 
 ### For stories that change UI, also include:
 ```
+"Use 21st.dev Magic MCP to build compelling, polished UI components"
 "Verify in browser using dev-browser skill"
 ```
+
+Frontend stories must use the **21st.dev Magic MCP** tools to create relevant, intuitive, and compelling UI components. Ralph agents should:
+- Use `21st_magic_component_builder` to generate new UI components (buttons, inputs, dialogs, tables, forms, cards, banners, etc.)
+- Use `21st_magic_component_inspiration` to browse and get inspiration from existing high-quality components
+- Use `21st_magic_component_refiner` to improve/redesign existing UI components
+- Use `logo_search` when company/brand logos are needed
 
 Frontend stories are NOT complete until visually verified. Ralph will use the dev-browser skill to navigate to the page, interact with the UI, and confirm changes work.
 
@@ -228,6 +235,7 @@ Add ability to mark tasks with different statuses.
       "acceptanceCriteria": [
         "Each task card shows colored status badge",
         "Badge colors: gray=pending, blue=in_progress, green=done",
+        "Use 21st.dev Magic MCP to build compelling, polished UI components",
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
       ],
@@ -244,6 +252,7 @@ Add ability to mark tasks with different statuses.
         "Each row has status dropdown or toggle",
         "Changing status saves immediately",
         "UI updates without page refresh",
+        "Use 21st.dev Magic MCP to build compelling, polished UI components",
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
       ],
@@ -259,6 +268,7 @@ Add ability to mark tasks with different statuses.
       "acceptanceCriteria": [
         "Filter dropdown: All | Pending | In Progress | Done",
         "Filter persists in URL params",
+        "Use 21st.dev Magic MCP to build compelling, polished UI components",
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
       ],
@@ -319,6 +329,7 @@ Before writing prd.json, verify:
 - [ ] Each story is completable in one iteration (small enough)
 - [ ] Stories are ordered by dependency (schema to backend to UI)
 - [ ] Every story has "Typecheck passes" as criterion
+- [ ] UI stories have "Use 21st.dev Magic MCP to build compelling, polished UI components" as criterion
 - [ ] UI stories have "Verify in browser using dev-browser skill" as criterion
 - [ ] Acceptance criteria are verifiable (not vague)
 - [ ] No story depends on a later story

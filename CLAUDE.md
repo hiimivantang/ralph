@@ -70,6 +70,17 @@ Before committing, check if any edited files have learnings worth preserving in 
 
 Only update CLAUDE.md if you have **genuinely reusable knowledge** that would help future work in that directory.
 
+## UI Development with 21st.dev Magic MCP
+
+When implementing stories that involve UI components, use the **21st.dev Magic MCP** tools to create relevant, intuitive, and compelling UI:
+
+- **Building new components:** Use `21st_magic_component_builder` to generate polished UI components (buttons, inputs, dialogs, tables, forms, cards, banners, etc.)
+- **Getting inspiration:** Use `21st_magic_component_inspiration` to browse high-quality component designs before building
+- **Refining existing UI:** Use `21st_magic_component_refiner` to improve/redesign existing components
+- **Adding logos:** Use `logo_search` when company/brand logos are needed
+
+Always prefer Magic MCP components over building UI from scratch. The goal is professional, polished interfaces with minimal effort.
+
 ## Quality Requirements
 
 - ALL commits must pass your project's quality checks (typecheck, lint, test)

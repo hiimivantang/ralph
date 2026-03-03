@@ -133,6 +133,7 @@ Each story should be small enough to implement in one focused session.
 - [ ] Specific verifiable criterion
 - [ ] Another criterion
 - [ ] Typecheck/lint passes
+- [ ] **[UI stories only]** Use 21st.dev Magic MCP to build compelling, polished UI components
 - [ ] **[UI stories only]** Verify in browser using dev-browser skill
 ```
 
@@ -172,6 +173,7 @@ What this feature will NOT include. Critical for managing scope. Be explicit —
 - Link to mockups if available
 - Relevant existing components to reuse
 - Visual aids or diagrams to clarify intent
+- **21st.dev Magic MCP:** For UI stories, note that implementation should use the 21st.dev Magic MCP tools to search for and generate high-quality, intuitive UI components (e.g., buttons, dialogs, tables, cards, forms). Reference specific component types needed so Ralph agents know to use Magic MCP during implementation.
 
 ### 10. Technical Considerations (Optional)
 - Known constraints or dependencies
