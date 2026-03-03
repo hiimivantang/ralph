@@ -98,9 +98,13 @@ if [[ "$TEAM_MODE" == true ]]; then
   echo "  Ralph Team Mode - Parallel Execution"
   echo "==============================================================="
 
-  OUTPUT=$(claude --dangerously-skip-permissions --print < "$SCRIPT_DIR/CLAUDE-team-lead.md" 2>&1 | tee /dev/stderr) || true
+  TEAM_PROMPT=$(cat "$SCRIPT_DIR/CLAUDE-team-lead.md")
+  claude --dangerously-skip-permissions "$TEAM_PROMPT" || true
 
-  if echo "$OUTPUT" | grep -q "<promise>COMPLETE</promise>"; then
+  # Check completion by examining prd.json directly
+  REMAINING=$(jq '[.userStories[] | select(.passes == false)] | length' "$PRD_FILE" 2>/dev/null || echo "1")
+
+  if [[ "$REMAINING" == "0" ]]; then
     echo ""
     echo "Ralph completed all tasks!"
     exit 0
