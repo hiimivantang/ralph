@@ -34,6 +34,7 @@ Take a PRD (markdown file or text) and convert it to `prd.json` in your ralph di
         "Typecheck passes"
       ],
       "priority": 1,
+      "dependsOn": [],
       "passes": false,
       "notes": ""
     }
@@ -124,6 +125,39 @@ Frontend stories are NOT complete until visually verified. Ralph will use the de
 4. **All stories**: `passes: false` and empty `notes`
 5. **branchName**: Derive from feature name, kebab-case, prefixed with `ralph/`
 6. **Always add**: "Typecheck passes" to every story's acceptance criteria
+7. **dependsOn**: Array of story IDs that must complete before this story can start (see dependency rules below)
+
+---
+
+## Dependency Rules (`dependsOn`)
+
+The `dependsOn` field enables parallel execution in team mode. Stories with no mutual dependencies can run simultaneously.
+
+### How to assign `dependsOn`:
+
+- **Schema/DB stories**: `dependsOn: []` — these have no dependencies and run first
+- **Backend logic stories**: depend on the schema story they use (e.g., `dependsOn: ["US-001"]`)
+- **UI stories**: depend on the backend story they consume (e.g., `dependsOn: ["US-002"]`)
+- **Unrelated stories**: no mutual dependencies — they can run in parallel even if they share a priority level
+
+### Rules:
+
+1. A story can only depend on stories with a lower or equal priority number
+2. Never create circular dependencies (A depends on B, B depends on A)
+3. Stories that touch completely different parts of the codebase should NOT depend on each other
+4. When in doubt, add the dependency — it's safer to serialize than to risk merge conflicts
+5. Use an empty array `[]` for stories with no dependencies, not an absent field
+
+### Example:
+
+```
+US-001 (DB schema)        → dependsOn: []
+US-002 (Badge UI)         → dependsOn: ["US-001"]
+US-003 (Priority selector)→ dependsOn: ["US-001"]
+US-004 (Filter UI)        → dependsOn: ["US-001"]
+```
+
+Here US-002, US-003, US-004 are independent of each other (they all only depend on US-001), so they can execute in parallel once US-001 is done.
 
 ---
 
@@ -178,6 +212,7 @@ Add ability to mark tasks with different statuses.
         "Typecheck passes"
       ],
       "priority": 1,
+      "dependsOn": [],
       "passes": false,
       "notes": ""
     },
@@ -192,6 +227,7 @@ Add ability to mark tasks with different statuses.
         "Verify in browser using dev-browser skill"
       ],
       "priority": 2,
+      "dependsOn": ["US-001"],
       "passes": false,
       "notes": ""
     },
@@ -206,7 +242,8 @@ Add ability to mark tasks with different statuses.
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
       ],
-      "priority": 3,
+      "priority": 2,
+      "dependsOn": ["US-001"],
       "passes": false,
       "notes": ""
     },
@@ -220,7 +257,8 @@ Add ability to mark tasks with different statuses.
         "Typecheck passes",
         "Verify in browser using dev-browser skill"
       ],
-      "priority": 4,
+      "priority": 2,
+      "dependsOn": ["US-001"],
       "passes": false,
       "notes": ""
     }
@@ -256,3 +294,6 @@ Before writing prd.json, verify:
 - [ ] UI stories have "Verify in browser using dev-browser skill" as criterion
 - [ ] Acceptance criteria are verifiable (not vague)
 - [ ] No story depends on a later story
+- [ ] `dependsOn` is set for each story (empty array `[]` if no dependencies)
+- [ ] No circular dependencies exist
+- [ ] Independent stories (different parts of codebase) don't have unnecessary dependencies

@@ -115,9 +115,14 @@ This creates `prd.json` with user stories structured for autonomous execution.
 
 # Using Claude Code
 ./scripts/ralph/ralph.sh --tool claude [max_iterations]
+
+# Using Claude Code with Team Mode (parallel execution)
+./scripts/ralph/ralph.sh --tool claude --team
 ```
 
 Default is 10 iterations. Use `--tool amp` or `--tool claude` to select your AI coding tool.
+
+#### Sequential Mode (default)
 
 Ralph will:
 1. Create a feature branch (from PRD `branchName`)
@@ -129,14 +134,42 @@ Ralph will:
 7. Append learnings to `progress.txt`
 8. Repeat until all stories pass or max iterations reached
 
+#### Team Mode (`--team`)
+
+Team mode enables parallel execution of independent stories using Claude Code's agent team primitives. Stories are grouped into **waves** based on the `dependsOn` field in `prd.json`. Stories within a wave run in parallel via separate worker agents, each in an isolated git worktree.
+
+```bash
+./scripts/ralph/ralph.sh --tool claude --team
+```
+
+**Requirements:**
+- Must use `--tool claude` (team mode is Claude Code only)
+- Stories should have `dependsOn` fields in `prd.json` (falls back to priority-based inference if absent)
+
+**How it works:**
+1. A team lead agent reads `prd.json` and computes dependency waves
+2. Wave 1: all stories with no dependencies run in parallel
+3. Wave 2: stories depending on Wave 1 run in parallel
+4. After each wave, results are merged and quality checks run
+5. Failed stories are retried sequentially
+6. Continues until all stories pass
+
+**Example waves:**
+```
+Wave 1: US-001 (DB schema — no deps)
+Wave 2: US-002, US-003, US-004 (all depend on US-001 — run in parallel)
+```
+
 ## Key Files
 
 | File | Purpose |
 |------|---------|
-| `ralph.sh` | The bash loop that spawns fresh AI instances (supports `--tool amp` or `--tool claude`) |
+| `ralph.sh` | The bash loop that spawns fresh AI instances (supports `--tool amp\|claude`, `--team`) |
 | `prompt.md` | Prompt template for Amp |
-| `CLAUDE.md` | Prompt template for Claude Code |
-| `prd.json` | User stories with `passes` status (the task list) |
+| `CLAUDE.md` | Prompt template for Claude Code (sequential mode) |
+| `CLAUDE-team-lead.md` | Team lead instructions for parallel execution mode |
+| `CLAUDE-team-worker.md` | Worker agent template for team mode |
+| `prd.json` | User stories with `passes` status and `dependsOn` dependencies |
 | `prd.json.example` | Example PRD format for reference |
 | `progress.txt` | Append-only learnings for future iterations |
 | `skills/prd/` | Skill for generating PRDs (works with Amp and Claude Code) |
