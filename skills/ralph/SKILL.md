@@ -145,8 +145,13 @@ The `dependsOn` field enables parallel execution in team mode. Stories with no m
 1. A story can only depend on stories with a lower or equal priority number
 2. Never create circular dependencies (A depends on B, B depends on A)
 3. Stories that touch completely different parts of the codebase should NOT depend on each other
-4. When in doubt, add the dependency — it's safer to serialize than to risk merge conflicts
+4. **Only add a dependency when story B reads, modifies, or imports something that story A creates.** If two stories just happen to appear on the same page or feature area but don't share code artifacts, they are independent. Fewer dependencies = more parallelism in team mode.
 5. Use an empty array `[]` for stories with no dependencies, not an absent field
+
+### Common false dependencies (do NOT add these):
+- UI component → sibling UI component (a chart and a summary card are independent if they both just read from the same engine)
+- Config/settings panel → display component (an assumptions panel and a results chart both depend on the calculation engine, not on each other)
+- localStorage/persistence → unrelated UI features (persistence depends on the form, not on every feature that uses the form)
 
 ### Example:
 
@@ -283,6 +288,29 @@ Add ability to mark tasks with different statuses.
 
 ---
 
+## Dependency Validation
+
+After assigning all `dependsOn` fields, draw the dependency graph and parallelization waves:
+
+```
+Example output:
+
+US-001 ─┬── US-002 ─── US-005
+        ├── US-003 ─┘
+        └── US-004
+
+Waves:
+- Wave 1: US-002 + US-003 + US-004 (parallel)
+- Wave 2: US-005
+```
+
+Then verify:
+- **Are any sibling stories unnecessarily chained?** Two stories that both depend on the same parent but NOT on each other should be in the same wave.
+- **Is the longest chain (critical path) as short as possible?** If a dependency can be removed without creating merge conflicts, remove it.
+- **Could a story be split to increase parallelism?** If a story blocks 3+ others, consider splitting it into independent pieces.
+
+---
+
 ## Checklist Before Saving
 
 Before writing prd.json, verify:
@@ -297,3 +325,5 @@ Before writing prd.json, verify:
 - [ ] `dependsOn` is set for each story (empty array `[]` if no dependencies)
 - [ ] No circular dependencies exist
 - [ ] Independent stories (different parts of codebase) don't have unnecessary dependencies
+- [ ] Dependency graph and parallelization waves are shown (see Dependency Validation)
+- [ ] No false dependencies between sibling stories (e.g., two UI components that don't share code)
